@@ -58,8 +58,8 @@ class MathScreen : Fragment() {
         val mathapp = MathApp.instance
 
         val firstOpPair = mathapp.operandList.last()
-        operand1Text.setText(firstOpPair.first.toString())
-        operand2Text.setText(firstOpPair.second.toString())
+        operand1Text.setText(firstOpPair.first.toInt().toString())
+        operand2Text.setText(firstOpPair.second.toInt().toString())
 
         var operationStr = ""
         if (mathapp.operationMode == OperationMode.ADDITION) operationStr = "+"
@@ -79,8 +79,8 @@ class MathScreen : Fragment() {
             else
             {
                 val nextOperands = mathapp.operandList.last()
-                operand1Text.setText(nextOperands.first.toString())
-                operand2Text.setText(nextOperands.second.toString())
+                operand1Text.setText(nextOperands.first.toInt().toString())
+                operand2Text.setText(nextOperands.second.toInt().toString())
             }
             answerText.setText("")
         }

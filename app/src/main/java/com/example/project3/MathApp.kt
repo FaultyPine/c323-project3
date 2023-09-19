@@ -1,6 +1,7 @@
 package com.example.project3
 
 import android.util.Log
+import java.lang.Math.abs
 import kotlin.random.Random
 
 enum class DifficultyLevel
@@ -12,7 +13,7 @@ enum class OperationMode
     ADDITION, MULTIPLICATION, DIVISION, SUBTRACTION
 }
 
-class OperandPair(f: Int, s: Int) {
+class OperandPair(f: Float, s: Float) {
     var first = f
     var second = s
 }
@@ -31,9 +32,13 @@ class MathApp {
         numCorrect = 0
     }
 
+    fun Float.sameValueAs(other: Float) : Boolean {
+        return (abs(this-other) < 0.01)
+    }
+
     fun ProcessAnswer(answer: String) : Boolean
     {
-        val answerNumOrNull = answer.toIntOrNull()
+        val answerNumOrNull = answer.toFloatOrNull()
         if (answerNumOrNull == null)
         {
             Log.w("[WARNING]","User entered non-number")
@@ -44,7 +49,7 @@ class MathApp {
         {
             val opPair: OperandPair = operandList.last()
             val answer = ComputeAnswer(opPair.first, opPair.second)
-            if (answer == answerNumOrNull)
+            if (answer.sameValueAs(answerNumOrNull))
             {
                 numCorrect += 1
             }
@@ -54,21 +59,22 @@ class MathApp {
         return operandList.isEmpty()
     }
 
-    fun NumberInDifficultyRange() : Int
+    fun NumberInDifficultyRange() : Float
     {
+        var num = 0
         if (difficultyLevel == DifficultyLevel.EASY)
         {
-            return (0 until 10).random()
+            num = (0 until 10).random()
         }
         else if (difficultyLevel == DifficultyLevel.MEDIUM)
         {
-            return (0 until 25).random()
+            num = (0 until 25).random()
         }
         else if (difficultyLevel == DifficultyLevel.HARD)
         {
-            return (0 until 50).random()
+            num = (0 until 50).random()
         }
-        return 0
+        return num.toFloat()
     }
 
     // called when the user hits "Start" on the beginning screen.
@@ -79,13 +85,20 @@ class MathApp {
         {
             var firstNum = NumberInDifficultyRange()
             var secondNum = NumberInDifficultyRange()
+            if (operationMode == OperationMode.DIVISION)
+            {
+                while (secondNum == 0.0f)
+                {
+                    secondNum = NumberInDifficultyRange()
+                }
+            }
             operandList.add(OperandPair(firstNum, secondNum))
         }
     }
 
-    fun ComputeAnswer(operand1: Int, operand2: Int) : Int
+    fun ComputeAnswer(operand1: Float, operand2: Float) : Float
     {
-        var answer = 0
+        var answer = 0.0f
         if (operationMode == OperationMode.ADDITION)
         {
             answer = operand1 + operand2
