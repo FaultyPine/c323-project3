@@ -84,10 +84,21 @@ class StartScreen : Fragment() {
                 mathapp.operationMode = OperationMode.SUBTRACTION
             }
         })
+
         // -------------------------------------------
         // start button
         val startButton = view.findViewById<Button>(R.id.bStart)
         startButton.setOnClickListener {
+            val operationButtonId = operationRadioGroup.checkedRadioButtonId
+            if (operationButtonId == R.id.bAddition) {
+                mathapp.operationMode = OperationMode.ADDITION
+            } else if (operationButtonId == R.id.bMultiplication) {
+                mathapp.operationMode = OperationMode.MULTIPLICATION
+            } else if (operationButtonId == R.id.bDivision) {
+                mathapp.operationMode = OperationMode.DIVISION
+            } else if (operationButtonId == R.id.bSubtraction) {
+                mathapp.operationMode = OperationMode.SUBTRACTION
+            }
             mathapp.StartMathScreen()
             val fm = parentFragmentManager
             if (fm != null)
