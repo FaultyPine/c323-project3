@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
@@ -44,6 +45,24 @@ class MathScreen : Fragment() {
             navController.navigate(R.id.action_mathScreen_to_mathEndScreen)
         }
     }
+    fun ToStartScreenWithGrade()
+    {
+        val mathapp = MathApp.instance
+        val numCorrect = mathapp.numCorrect
+        val numQuestions = mathapp.numQuestions
+        val operationMode = mathapp.operationMode
+        val fm = parentFragmentManager
+        if (fm != null)
+        {
+            MathApp.instance.Reset()
+            val startScreen = fm.findFragmentById(R.id.nav_host_fragment) as MathScreen
+            val navController = startScreen.findNavController()
+            val action = MathScreenDirections.actionMathScreenToStartScreen(numQuestions, numCorrect, operationMode)
+            navController.navigate(action)
+            //val bundle = bundleOf("numCorrect" to numCorrect, "numQuestions" to numQuestions)
+            //navController.navigate(R.id.action_mathScreen_to_startScreen, bundle)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +93,9 @@ class MathScreen : Fragment() {
         doneButton.setOnClickListener {
             if (mathapp.ProcessAnswer(answerText.text.toString()))
             {
-                ToEndScreen()
+                //ToEndScreen()
+                //MathScreenDirections.actionMathScreenToStartScreen()
+                ToStartScreenWithGrade()
             }
             else
             {

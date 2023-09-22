@@ -1,6 +1,7 @@
 package com.example.project3
 
 //import android.R
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -27,6 +29,8 @@ class StartScreen : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    val args: StartScreenArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,12 +39,55 @@ class StartScreen : Fragment() {
         }
     }
 
+    fun SetGradeText(gradeText: TextView, numQuestions: Int, numCorrect: Int, operationMode: OperationMode)
+    {
+        var operationStr = "Addition"
+        if (operationMode == OperationMode.ADDITION) operationStr = "Addition"
+        if (operationMode == OperationMode.MULTIPLICATION) operationStr = "Multiplication"
+        if (operationMode == OperationMode.DIVISION) operationStr = "Division"
+        if (operationMode == OperationMode.SUBTRACTION) operationStr = "Subtraction"
+
+        val gradePercent = numCorrect.toFloat() / numQuestions.toFloat()
+        var gradeMsg = ""
+        if (gradePercent < 0.8)
+        {
+            gradeMsg = "You got $numCorrect out of $numQuestions in $operationStr. You need more practice!"
+            gradeText.setTextColor(Color.RED)
+        }
+        else
+        {
+            gradeMsg = "You got $numCorrect out of $numQuestions in $operationStr. Good work!"
+            gradeText.setTextColor(Color.GREEN)
+        }
+        gradeText.setText(gradeMsg)
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_start_screen, container, false)
+
+        val prevNumQuestions = args.numQuestions
+        val prevNumCorrect = args.numCorrect
+        val operationMode = args.operationMode
+        val gradeText = view.findViewById<TextView>(R.id.textGrade)
+        if (prevNumQuestions != 0)
+        {
+            // we just came from a math screen, display the grade
+            println(prevNumQuestions)
+            println(prevNumCorrect)
+            SetGradeText(gradeText, prevNumQuestions, prevNumCorrect, operationMode)
+        }
+        else
+        {
+            gradeText.setText("")
+        }
+        //val prevNumQuestions = arguments?.getInt("numQuestions")
+        //val prevNumCorrect = arguments?.getInt("numCorrect")
+
 
         var mathapp = MathApp.instance
 

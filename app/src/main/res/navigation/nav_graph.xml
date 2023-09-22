@@ -18,6 +18,18 @@
         <action
             android:id="@+id/action_startScreen_to_mathScreen"
             app:destination="@id/mathScreen" />
+        <argument
+            android:name="numQuestions"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="numCorrect"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="operationMode"
+            app:argType="com.example.project3.OperationMode"
+            android:defaultValue="ADDITION" />
     </fragment>
     <fragment
         android:id="@+id/mathScreen"
