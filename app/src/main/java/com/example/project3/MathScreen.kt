@@ -1,5 +1,6 @@
 package com.example.project3
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,11 +12,22 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
+import android.media.MediaPlayer
+import android.widget.Toast
+
+
+/*private lateinit var mediaPlayer1: MediaPlayer
+private lateinit var mediaPlayer2: MediaPlayer
+private lateinit var toast1: Toast
+private lateinit var toast2: Toast*/
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -23,6 +35,12 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MathScreen : Fragment() {
+
+
+    /*private lateinit var mediaPlayer1: MediaPlayer
+    private lateinit var mediaPlayer2: MediaPlayer
+    private lateinit var toast1: Toast
+    private lateinit var toast2: Toast*/
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -33,6 +51,7 @@ class MathScreen : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     fun ToEndScreen()
@@ -90,20 +109,49 @@ class MathScreen : Fragment() {
 
         // end this screen
         val doneButton = view.findViewById<Button>(R.id.bDone)
+        //val toast1: Toast = Toast.makeText(context, "Correct. Good Work!",Toast.LENGTH_SHORT)
+        //val toast2: Toast = Toast.makeText(context, "Incorrect", Toast.LENGTH_SHORT)
+        val mediaPlayer1 = MediaPlayer.create(context, R.raw.right)
+        val mediaPlayer2 = MediaPlayer.create( context, R.raw.wrong)
         doneButton.setOnClickListener {
+            var numCorrect = mathapp.numCorrect
+            var lastCorrect = 0
+
             if (mathapp.ProcessAnswer(answerText.text.toString()))
             {
                 //ToEndScreen()
                 //MathScreenDirections.actionMathScreenToStartScreen()
+                lastCorrect = mathapp.numCorrect
                 ToStartScreenWithGrade()
             }
             else
             {
+                lastCorrect = mathapp.numCorrect
+                //val toast1: Toast = Toast.makeText(context, "Correct. Good Work!",Toast.LENGTH_SHORT)
+                //val toast2: Toast = Toast.makeText(context, "Incorrect", Toast.LENGTH_SHORT)
+                //val mediaPlayer1 = MediaPlayer.create(context, R.raw.right)
+                //val mediaPlayer2 = MediaPlayer.create( context, R.raw.wrong)
                 val nextOperands = mathapp.operandList.last()
                 operand1Text.setText(nextOperands.first.toInt().toString())
                 operand2Text.setText(nextOperands.second.toInt().toString())
             }
+
+            if (lastCorrect > numCorrect ){
+                println("pooop")
+                val toast1 = Toast.makeText(context, "Correct. Good Work!",Toast.LENGTH_SHORT)
+                toast1.show()
+                mediaPlayer1.start()
+            }
+            else {
+                println("shoe")
+                val toast2 = Toast.makeText(context, "Incorrect", Toast.LENGTH_SHORT)
+                toast2.show()
+
+                mediaPlayer2.start()
+            }
+
             answerText.setText("")
+
         }
 
         return view
