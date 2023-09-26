@@ -1,4 +1,4 @@
-# project3 Math Practice Arithmetic
+# project4 Math Practice Arithmetic
 
 User can practice math by choosing a difficulty & operand to practice. User can also choose the amount of questions they wish to answer.
 
@@ -7,9 +7,8 @@ User can practice math by choosing a difficulty & operand to practice. User can 
 The following **required** functionality is completed:
 
 * [ ] User sees a start screen in which they choose diffculty (which correlates to the range of numbers that can appear in questions), and the operation in the questions
-* [ ] User presses start, moves to a new screen, and answers questions until they get a message on their result
-* [ ] ...
-* [ ] ...
+* [ ] User presses start, moves to a new screen, and answers questions until they finish the questions and are brought the the beginning screen with their grade
+* [ ] App displays a toast & sound effect when user answers a question
 
 The following **extensions** are implemented:
 
@@ -23,12 +22,14 @@ The following **extensions** are implemented:
 Here's a walkthrough of implemented user stories:
 
 
-![proj3walkthrough](https://github.com/pascalkoj/project3/assets/104457751/eecd8ffa-5f8d-4ef8-9712-42198783225c)
+
+https://github.com/FaultyPine/c323-project3/assets/53064235/1b1e1209-beb7-45ab-b757-90a69c7ba8f4
+
 
 
 ## Notes
 
-researching and properly implementing fragments was difficult
+None
 
 ## License
 
