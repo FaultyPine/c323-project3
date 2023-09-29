@@ -27,6 +27,10 @@ class StartScreen : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    var numQuestions = 1
+    var difficultyLevel = DifficultyLevel.EASY
+    var operationMode = OperationMode.ADDITION
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -46,28 +50,28 @@ class StartScreen : Fragment() {
 
         // more or less questions
         val numQuestionsText = view.findViewById<TextView>(R.id.textNumQuestions)
-        numQuestionsText.setText(mathapp.numQuestions.toString())
+        numQuestionsText.setText(numQuestions.toString())
 
         val moreQuestionsButton = view.findViewById<Button>(R.id.bMoreQuestions)
         moreQuestionsButton.setOnClickListener {
-            mathapp.numQuestions += 1
-            numQuestionsText.setText(mathapp.numQuestions.toString())
+            numQuestions += 1
+            numQuestionsText.setText(numQuestions.toString())
         }
         val lessQuestionsButton = view.findViewById<Button>(R.id.bLessQuestions)
         lessQuestionsButton.setOnClickListener{
-            mathapp.numQuestions = Math.max(1, mathapp.numQuestions-1)
-            numQuestionsText.setText(mathapp.numQuestions.toString())
+            numQuestions = Math.max(1, numQuestions-1)
+            numQuestionsText.setText(numQuestions.toString())
         }
         // ----------------------------------------
         // easy, medium, hard
         val difficultyRadioGroup = view.findViewById<RadioGroup>(R.id.radioGroupDifficulty)
         difficultyRadioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { group, checkedId ->
             if (checkedId == R.id.bEasy) {
-                mathapp.difficultyLevel = DifficultyLevel.EASY
+                difficultyLevel = DifficultyLevel.EASY
             } else if (checkedId == R.id.bMedium) {
-                mathapp.difficultyLevel = DifficultyLevel.MEDIUM
+                difficultyLevel = DifficultyLevel.MEDIUM
             } else if (checkedId == R.id.bHard) {
-                mathapp.difficultyLevel = DifficultyLevel.HARD
+                difficultyLevel = DifficultyLevel.HARD
             }
         })
         // ------------------------------------------
@@ -75,13 +79,13 @@ class StartScreen : Fragment() {
         val operationRadioGroup = view.findViewById<RadioGroup>(R.id.radioGroupOperations)
         operationRadioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { group, checkedId ->
             if (checkedId == R.id.bAddition) {
-                mathapp.operationMode = OperationMode.ADDITION
+                operationMode = OperationMode.ADDITION
             } else if (checkedId == R.id.bMultiplication) {
-                mathapp.operationMode = OperationMode.MULTIPLICATION
+                operationMode = OperationMode.MULTIPLICATION
             } else if (checkedId == R.id.bDivision) {
-                mathapp.operationMode = OperationMode.DIVISION
+                operationMode = OperationMode.DIVISION
             } else if (checkedId == R.id.bSubtraction) {
-                mathapp.operationMode = OperationMode.SUBTRACTION
+                operationMode = OperationMode.SUBTRACTION
             }
         })
 
@@ -89,23 +93,24 @@ class StartScreen : Fragment() {
         // start button
         val startButton = view.findViewById<Button>(R.id.bStart)
         startButton.setOnClickListener {
-            val operationButtonId = operationRadioGroup.checkedRadioButtonId
-            if (operationButtonId == R.id.bAddition) {
-                mathapp.operationMode = OperationMode.ADDITION
-            } else if (operationButtonId == R.id.bMultiplication) {
-                mathapp.operationMode = OperationMode.MULTIPLICATION
-            } else if (operationButtonId == R.id.bDivision) {
-                mathapp.operationMode = OperationMode.DIVISION
-            } else if (operationButtonId == R.id.bSubtraction) {
-                mathapp.operationMode = OperationMode.SUBTRACTION
-            }
-            mathapp.StartMathScreen()
+            //val operationButtonId = operationRadioGroup.checkedRadioButtonId
+//            if (operationButtonId == R.id.bAddition) {
+//                mathapp.operationMode = OperationMode.ADDITION
+//            } else if (operationButtonId == R.id.bMultiplication) {
+//                mathapp.operationMode = OperationMode.MULTIPLICATION
+//            } else if (operationButtonId == R.id.bDivision) {
+//                mathapp.operationMode = OperationMode.DIVISION
+//            } else if (operationButtonId == R.id.bSubtraction) {
+//                mathapp.operationMode = OperationMode.SUBTRACTION
+//            }
+            //mathapp.StartMathScreen()
             val fm = parentFragmentManager
             if (fm != null)
             {
                 val startScreen = fm.findFragmentById(R.id.nav_host_fragment) as StartScreen
                 val navController = startScreen.findNavController()
-                navController.navigate(R.id.action_startScreen_to_mathScreen)
+                val action = StartScreenDirections.actionStartScreenToMathScreen(difficultyLevel, operationMode, numQuestions)
+                navController.navigate(action)
             }
         }
 

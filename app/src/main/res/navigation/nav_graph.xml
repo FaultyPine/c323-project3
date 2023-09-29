@@ -30,6 +30,18 @@
         <action
             android:id="@+id/action_mathScreen_to_mathEndScreen"
             app:destination="@id/mathEndScreen" />
+        <argument
+            android:name="difficulty"
+            app:argType="com.example.project3.DifficultyLevel"
+            android:defaultValue="EASY" />
+        <argument
+            android:name="operationmode"
+            app:argType="com.example.project3.OperationMode"
+            android:defaultValue="ADDITION" />
+        <argument
+            android:name="numQuestions"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
     <fragment
         android:id="@+id/mathEndScreen"
@@ -39,5 +51,13 @@
         <action
             android:id="@+id/action_mathEndScreen_to_startScreen"
             app:destination="@id/startScreen" />
+        <argument
+            android:name="numCorrect"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="numQuestions"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
 </navigation>

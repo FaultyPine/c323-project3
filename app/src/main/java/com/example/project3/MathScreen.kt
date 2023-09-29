@@ -1,6 +1,7 @@
 package com.example.project3
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.textfield.TextInputEditText
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,6 +28,16 @@ class MathScreen : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    var operandList: ArrayList<OperandPair> = ArrayList()
+    var numQuestions = 1
+    var difficultyLevel = DifficultyLevel.EASY
+    var operationMode = OperationMode.ADDITION
+    var numCorrect = 0
+
+    val args: MathScreenArgs by navArgs()
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -41,7 +53,8 @@ class MathScreen : Fragment() {
         {
             val startScreen = fm.findFragmentById(R.id.nav_host_fragment) as MathScreen
             val navController = startScreen.findNavController()
-            navController.navigate(R.id.action_mathScreen_to_mathEndScreen)
+            val action = MathScreenDirections.actionMathScreenToMathEndScreen(numCorrect, numQuestions)
+            navController.navigate(action)
         }
     }
 
@@ -49,6 +62,11 @@ class MathScreen : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        numQuestions = args.numQuestions
+        difficultyLevel = args.difficulty
+        operationMode = args.operationmode
+        Reset()
+        StartMathScreen()
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_math_screen, container, false)
         val answerText = view.findViewById<TextInputEditText>(R.id.textInputEditText)
@@ -57,28 +75,28 @@ class MathScreen : Fragment() {
         val operationText = view.findViewById<TextView>(R.id.textOperation)
         val mathapp = MathApp.instance
 
-        val firstOpPair = mathapp.operandList.last()
+        val firstOpPair = operandList.last()
         operand1Text.setText(firstOpPair.first.toInt().toString())
         operand2Text.setText(firstOpPair.second.toInt().toString())
 
         var operationStr = ""
-        if (mathapp.operationMode == OperationMode.ADDITION) operationStr = "+"
-        if (mathapp.operationMode == OperationMode.MULTIPLICATION) operationStr = "*"
-        if (mathapp.operationMode == OperationMode.DIVISION) operationStr = "/"
-        if (mathapp.operationMode == OperationMode.SUBTRACTION) operationStr = "-"
+        if (operationMode == OperationMode.ADDITION) operationStr = "+"
+        if (operationMode == OperationMode.MULTIPLICATION) operationStr = "*"
+        if (operationMode == OperationMode.DIVISION) operationStr = "/"
+        if (operationMode == OperationMode.SUBTRACTION) operationStr = "-"
         operationText.setText(operationStr)
 
 
         // end this screen
         val doneButton = view.findViewById<Button>(R.id.bDone)
         doneButton.setOnClickListener {
-            if (mathapp.ProcessAnswer(answerText.text.toString()))
+            if (ProcessAnswer(answerText.text.toString()))
             {
                 ToEndScreen()
             }
             else
             {
-                val nextOperands = mathapp.operandList.last()
+                val nextOperands = operandList.last()
                 operand1Text.setText(nextOperands.first.toInt().toString())
                 operand2Text.setText(nextOperands.second.toInt().toString())
             }
@@ -87,6 +105,101 @@ class MathScreen : Fragment() {
 
         return view
     }
+
+    fun NumberInDifficultyRange() : Float
+    {
+        var num = 0
+        if (difficultyLevel == DifficultyLevel.EASY)
+        {
+            num = (0 until 10).random()
+        }
+        else if (difficultyLevel == DifficultyLevel.MEDIUM)
+        {
+            num = (0 until 25).random()
+        }
+        else if (difficultyLevel == DifficultyLevel.HARD)
+        {
+            num = (0 until 50).random()
+        }
+        return num.toFloat()
+    }
+
+    // called when the user hits "Start" on the beginning screen.
+    // sets up "numQuestions" number of problems
+    fun StartMathScreen()
+    {
+        for (i in 0 until numQuestions)
+        {
+            var firstNum = NumberInDifficultyRange()
+            var secondNum = NumberInDifficultyRange()
+            if (operationMode == OperationMode.DIVISION)
+            {
+                while (secondNum == 0.0f)
+                {
+                    secondNum = NumberInDifficultyRange()
+                }
+            }
+            operandList.add(OperandPair(firstNum, secondNum))
+        }
+    }
+
+
+    fun Reset()
+    {
+        operandList.clear()
+        numCorrect = 0
+    }
+
+    fun Float.sameValueAs(other: Float) : Boolean {
+        return (Math.abs(this - other) < 0.01)
+    }
+
+    fun ProcessAnswer(answer: String) : Boolean
+    {
+        val answerNumOrNull = answer.toFloatOrNull()
+        if (answerNumOrNull == null)
+        {
+            Log.w("[WARNING]","User entered non-number")
+            return false
+        }
+
+        if (operandList.size > 0)
+        {
+            val opPair: OperandPair = operandList.last()
+            val answer = ComputeAnswer(opPair.first, opPair.second)
+            if (answer.sameValueAs(answerNumOrNull))
+            {
+                numCorrect += 1
+            }
+            operandList.removeLast() // go to next question even if we get it wrong
+        }
+
+        return operandList.isEmpty()
+    }
+
+
+    fun ComputeAnswer(operand1: Float, operand2: Float) : Float
+    {
+        var answer = 0.0f
+        if (operationMode == OperationMode.ADDITION)
+        {
+            answer = operand1 + operand2
+        }
+        else if (operationMode == OperationMode.MULTIPLICATION)
+        {
+            answer = operand1 * operand2
+        }
+        else if (operationMode == OperationMode.DIVISION)
+        {
+            answer = operand1 / operand2
+        }
+        else if (operationMode == OperationMode.SUBTRACTION)
+        {
+            answer = operand1 - operand2
+        }
+        return answer
+    }
+
 
     companion object {
         /**

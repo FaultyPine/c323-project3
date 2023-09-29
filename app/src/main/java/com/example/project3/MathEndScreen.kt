@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +25,8 @@ class MathEndScreen : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    val args: MathEndScreenArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,9 +37,11 @@ class MathEndScreen : Fragment() {
 
     fun GetScoreString() : String
     {
-        val mathapp = MathApp.instance
-        val correct = mathapp.numCorrect
-        val total = mathapp.numQuestions
+        //val mathapp = MathApp.instance
+        //val correct = mathapp.numCorrect
+        //val total = mathapp.numQuestions
+        val correct = args.numCorrect
+        val total = args.numQuestions
         return "$correct of $total"
     }
 
@@ -52,7 +57,7 @@ class MathEndScreen : Fragment() {
 
         val startOverButton = view.findViewById<Button>(R.id.bStartOver)
         startOverButton.setOnClickListener {
-            MathApp.instance.Reset()
+            //MathApp.instance.Reset()
             val fm = parentFragmentManager
             if (fm != null)
             {
