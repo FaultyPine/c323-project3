@@ -2,6 +2,8 @@
 
 User can practice math by choosing a difficulty & operand to practice. User can also choose the amount of questions they wish to answer.
 
+Partner: Pascal Koj
+
 ## Functionality
 
 The following **required** functionality is completed:
